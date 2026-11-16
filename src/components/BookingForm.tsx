@@ -32,9 +32,12 @@ function toText(d: Data) {
   );
 }
 
-function waLink(d: Data) {
-  return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(toText(d))}`;
+// Запасной канал, если бот Telegram не настроен: WhatsApp (если указан номер), иначе почта
+function fallbackLink(d: Data) {
+  if (site.whatsappNumber) return `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(toText(d))}`;
+  return `mailto:${site.email}?subject=${encodeURIComponent("Заявка на трансфер")}&body=${encodeURIComponent(toText(d))}`;
 }
+const fallbackWhere = site.whatsappNumber ? "WhatsApp" : "почтовой программе";
 
 export default function BookingForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -63,7 +66,8 @@ export default function BookingForm() {
       } else if (r.status === 503) {
         // Бот не настроен — отправляем через WhatsApp
         setStatus("fallback");
-        window.open(waLink(data), "_blank");
+        if (site.whatsappNumber) window.open(fallbackLink(data), "_blank");
+        else window.location.href = fallbackLink(data);
       } else {
         setStatus("error");
       }
@@ -134,15 +138,17 @@ export default function BookingForm() {
       {status === "ok" && <p className="form-msg ok">Заявка отправлена. Мы свяжемся с вами в ближайшее время.</p>}
       {status === "fallback" && last && (
         <p className="form-msg">
-          Открылся WhatsApp с текстом заявки — нажмите «Отправить». Не открылся?{" "}
-          <a href={waLink(last)} target="_blank" rel="noopener">Открыть WhatsApp</a>
+          Текст заявки открыт в {fallbackWhere} — нажмите «Отправить». Не открылось?{" "}
+          <a href={fallbackLink(last)} target="_blank" rel="noopener">Открыть ещё раз</a>
         </p>
       )}
       {status === "error" && (
         <p className="form-msg err">
           Не удалось отправить. Напишите нам в{" "}
-          <a href={site.messengers.whatsapp} target="_blank" rel="noopener">WhatsApp</a> или{" "}
-          <a href={site.messengers.telegram} target="_blank" rel="noopener">Telegram</a>.
+          <a href={site.messengers.whatsapp || site.messengers.telegram} target="_blank" rel="noopener">
+            {site.messengers.whatsapp ? "WhatsApp" : "Telegram"}
+          </a>{" "}
+          или на <a href={`mailto:${site.email}`}>{site.email}</a>.
         </p>
       )}
     </form>

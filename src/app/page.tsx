@@ -2,7 +2,7 @@ import Image from "next/image";
 import BookingForm from "@/components/BookingForm";
 import Messengers from "@/components/Messengers";
 import TurkeyMap from "@/components/TurkeyMap";
-import { WhatsAppIcon, Headset, People, Plane, Van, Wifi, stepIcons, vehicleArt } from "@/components/Icons";
+import { WhatsAppIcon, TelegramIcon, Headset, People, Plane, Van, Wifi, stepIcons, vehicleArt } from "@/components/Icons";
 import { faq, fleet, perks, services, steps, tours } from "@/config/content";
 import { site } from "@/config/site";
 
@@ -209,16 +209,23 @@ export default function Home() {
             <p className="slogan">{site.slogan}</p>
           </div>
           <div className="footer-contacts">
-            <a href={`tel:${site.phoneRaw}`} className="phone">{site.phone}</a>
+            {site.phone && <a href={`tel:${site.phoneRaw}`} className="phone">{site.phone}</a>}
+            {site.email && <a href={`mailto:${site.email}`} className="email">{site.email}</a>}
             <Messengers compact />
           </div>
         </div>
         <div className="container copy">© {new Date().getFullYear()} {site.name}</div>
       </footer>
 
-      <a href={site.messengers.whatsapp} target="_blank" rel="noopener" className="fab" aria-label="Написать в WhatsApp">
-        <WhatsAppIcon className="fab-ico" />
-      </a>
+      {site.messengers.whatsapp ? (
+        <a href={site.messengers.whatsapp} target="_blank" rel="noopener" className="fab" aria-label="Написать в WhatsApp">
+          <WhatsAppIcon className="fab-ico" />
+        </a>
+      ) : site.messengers.telegram ? (
+        <a href={site.messengers.telegram} target="_blank" rel="noopener" className="fab fab-tg" aria-label="Написать в Telegram">
+          <TelegramIcon className="fab-ico" />
+        </a>
+      ) : null}
     </>
   );
 }

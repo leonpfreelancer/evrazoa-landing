@@ -156,7 +156,14 @@ export const MaxIcon = ({ className }: P) => (
   </svg>
 );
 
-export const VkIcon = ({ className }: P) => (
+export const MailIcon = ({ className }: P) => (
+  <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round">
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="M3.5 6.5L12 13l8.5-6.5" />
+  </svg>
+);
+
+export const VkIcon =({ className }: P) => (
   <svg viewBox="0 0 24 24" className={className} fill="currentColor">
     <path d="M12.8 17.5C6.6 17.5 3.1 13.3 3 6.3h3.1c.1 5.1 2.4 7.3 4.2 7.7V6.3h2.9v4.4c1.8-.2 3.7-2.2 4.3-4.4h2.9c-.5 2.7-2.5 4.7-3.9 5.5 1.4.7 3.7 2.4 4.5 5.6h-3.2c-.7-2.1-2.4-3.8-4.6-4v4h-.4z" />
   </svg>
