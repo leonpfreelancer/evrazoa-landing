@@ -11,6 +11,22 @@ Options -Indexes
   # RewriteCond %{HTTP:X-Forwarded-Proto} !https
   # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+  # Старые страницы (на них куплены ссылки).
+  # Стамбул = главная — постоянный 301.
+  RewriteRule ^arenda-avto-s-voditelem-v-stambule/?$ / [R=301,L]
+  # Анталья и Аланья — временно на главную (302), пока делаются их страницы.
+  RewriteCond %{DOCUMENT_ROOT}/arenda-avto-s-voditelem-v-antalye.html !-f
+  RewriteRule ^arenda-avto-s-voditelem-v-antalye/?$ / [R=302,L]
+  RewriteCond %{DOCUMENT_ROOT}/arenda-avto-s-voditelem-v-alanii.html !-f
+  RewriteRule ^arenda-avto-s-voditelem-v-alanii/?$ / [R=302,L]
+  # Китай, Тбилиси, Минск и т.д. — пока на главную (301).
+  RewriteRule ^arenda-avto-s-voditelem-v-(kitae|shankhae|pekine|guangchzhou|tbilisi|batumi|minske)/?$ / [R=301,L]
+
+  # Страницы без .html: /arenda-avto-s-voditelem-v-antalye/ -> arenda-avto-s-voditelem-v-antalye.html
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+  RewriteRule ^([a-z0-9-]+)/?$ $1.html [L]
+
   # Форма: /api/booking -> api/booking.php
   RewriteRule ^api/booking/?$ api/booking.php [L]
 
