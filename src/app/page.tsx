@@ -2,6 +2,7 @@ import Image from "next/image";
 import BookingForm from "@/components/BookingForm";
 import Messengers from "@/components/Messengers";
 import TurkeyMap from "@/components/TurkeyMap";
+import PartnerLogo from "@/components/PartnerLogo";
 import { WhatsAppIcon, TelegramIcon, Headset, People, Plane, Van, Wifi, stepIcons, vehicleArt } from "@/components/Icons";
 import { faq, fleet, perks, services, steps, tours } from "@/config/content";
 import { site } from "@/config/site";
@@ -26,7 +27,14 @@ export default function Home() {
     <>
       <header className="header">
         <div className="container header-in">
-          <Logo />
+          <div className="brand">
+            <Logo />
+            {site.partner.url && (
+              <a href={site.partner.url} target="_blank" rel="noopener" className="brand-partner" aria-label={`Партнёр ${site.partner.name}`}>
+                <PartnerLogo />
+              </a>
+            )}
+          </div>
           <nav className="nav">
             <a href="#how">Трансфер</a>
             <a href="#fleet">Транспорт</a>
@@ -61,6 +69,19 @@ export default function Home() {
             <p className="slogan">{site.slogan}</p>
           </div>
         </section>
+
+        {/* ПАРТНЁР */}
+        {site.partner.url && (
+          <section className="partner">
+            <div className="container partner-in">
+              <p className="eyebrow">Прямой партнёр</p>
+              <a href={site.partner.url} target="_blank" rel="noopener" className="partner-logo">
+                <PartnerLogo className="mcd-lg" />
+              </a>
+              <p className="muted">Заказы {site.partner.name} выполняем напрямую, без посредников.</p>
+            </div>
+          </section>
+        )}
 
         {/* КАК ЭТО ПРОИСХОДИТ */}
         <section id="how" className="section">

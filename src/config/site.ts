@@ -5,6 +5,8 @@ export const site = {
   slogan: "Два берега. Одна дорога.",
   url: "https://evrazoa-landing.iskipper123.workers.dev", // TODO: свой домен
 
+  partner: { name: "MyChauffeurDrive.com", url: "https://mychauffeurdrive.com" }, // url: "" — скрыть
+
   email: "info@evraziacitytrans.ru",
 
   phone: "", // как показывать, например "+90 555 000 00 00"

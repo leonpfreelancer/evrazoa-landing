@@ -264,3 +264,24 @@ h3 { font-size: clamp(26px, 2.6vw, 34px); }
 .fab-tg { background: #229ed9; }
 .footer .email { color: var(--muted); text-decoration: none; font-size: 17px; }
 .footer .email:hover { color: var(--cream); }
+
+/* Партнёр */
+.brand { display: flex; flex-direction: column; gap: 6px; }
+.brand-partner { display: block; padding-top: 6px; border-top: 1px solid rgba(243, 237, 225, .5); text-decoration: none; }
+.mcd { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.mcd-mark { width: 18px; height: 18px; flex: none; }
+.mcd-text { font: 700 15px/1 var(--sans); color: #fff; letter-spacing: -0.01em; }
+.mcd-com { color: var(--gold); }
+.mcd-lg .mcd-mark { width: 40px; height: 40px; }
+.mcd-lg .mcd-text { font-size: clamp(26px, 4vw, 40px); }
+.header-in { height: auto; min-height: 72px; padding: 12px 0; }
+.partner { border-top: 1px solid var(--line-soft); background: var(--bg-2); }
+.partner-in { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 48px 0; }
+.partner-in .eyebrow { margin: 0; }
+.partner-logo { text-decoration: none; }
+@media (max-width: 640px) {
+  .mcd-text { font-size: 13px; }
+  .mcd-mark { width: 15px; height: 15px; }
+  .mcd-lg .mcd-mark { width: 30px; height: 30px; }
+  .partner-in { padding: 36px 0; }
+}
