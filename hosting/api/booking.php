@@ -78,10 +78,79 @@ if ($mailTo) {
         if ($v !== '') $lines[] = $label . ': ' . str_replace(["\r", "\n"], ' ', $v);
     }
     $subject = '=?UTF-8?B?' . base64_encode('Заявка на трансфер: ' . $get('name')) . '?=';
-    $headers = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\n";
-    if ($mailFrom) $headers .= "From: {$mailFrom}\r\n";
-    if (mail($mailTo, $subject, implode("\n", $lines), $headers)) $ok = true;
-    else error_log('mail() failed');
+    $text = implode("\n", $lines);
+    $recipients = array_filter(array_map('trim', explode(',', $mailTo)));
+
+    if (!empty($cfg['smtp_host']) && !empty($cfg['smtp_user']) && !empty($cfg['smtp_pass'])) {
+        // Отправка через SMTP почтового ящика (например, Beget)
+        $from = $mailFrom ?: $cfg['smtp_user'];
+        $err = smtp_send($cfg, $from, $recipients, $subject, $text);
+        if ($err === null) $ok = true;
+        else error_log('SMTP error: ' . $err);
+    } else {
+        $headers = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\n";
+        if ($mailFrom) $headers .= "From: {$mailFrom}\r\n";
+        if (mail(implode(', ', $recipients), $subject, $text, $headers)) $ok = true;
+        else error_log('mail() failed');
+    }
+}
+
+// Минимальный SMTP-клиент (SSL, AUTH LOGIN). Возвращает null при успехе или текст ошибки.
+function smtp_send($cfg, $from, $to, $subject, $text) {
+    $host = $cfg['smtp_host'];
+    $port = (int)($cfg['smtp_port'] ?? 465);
+    $secure = $cfg['smtp_secure'] ?? 'ssl';
+    $remote = ($secure === 'ssl' ? 'ssl://' : 'tcp://') . $host . ':' . $port;
+    $fp = @stream_socket_client($remote, $errno, $errstr, 15);
+    if (!$fp) return "connect $remote: $errstr";
+    stream_set_timeout($fp, 15);
+
+    $read = function () use ($fp) {
+        $data = '';
+        while (($line = fgets($fp, 515)) !== false) {
+            $data .= $line;
+            if (strlen($line) < 4 || $line[3] === ' ') break;
+        }
+        return $data;
+    };
+    $cmd = function ($c, $expect) use ($fp, $read) {
+        if ($c !== null) fwrite($fp, $c . "\r\n");
+        $r = $read();
+        return (strpos($r, (string)$expect) === 0) ? null : trim($r);
+    };
+
+    $domain = substr(strrchr($from, '@'), 1) ?: 'localhost';
+    if ($e = $cmd(null, 220)) return "greeting: $e";
+    if ($e = $cmd("EHLO $domain", 250)) return "EHLO: $e";
+    if ($secure === 'tls') {
+        if ($e = $cmd('STARTTLS', 220)) return "STARTTLS: $e";
+        if (!stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) return 'TLS failed';
+        if ($e = $cmd("EHLO $domain", 250)) return "EHLO2: $e";
+    }
+    if ($e = $cmd('AUTH LOGIN', 334)) return "AUTH: $e";
+    if ($e = $cmd(base64_encode($cfg['smtp_user']), 334)) return "user: $e";
+    if ($e = $cmd(base64_encode($cfg['smtp_pass']), 235)) return "pass: $e";
+    if ($e = $cmd("MAIL FROM:<$from>", 250)) return "MAIL FROM: $e";
+    foreach ($to as $rcpt) {
+        if ($e = $cmd("RCPT TO:<$rcpt>", 250)) return "RCPT $rcpt: $e";
+    }
+    if ($e = $cmd('DATA', 354)) return "DATA: $e";
+
+    $headers = [
+        'Date: ' . date('r'),
+        'From: ' . $from,
+        'To: ' . implode(', ', $to),
+        'Subject: ' . $subject,
+        'Message-ID: <' . bin2hex(random_bytes(8)) . '@' . $domain . '>',
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'Content-Transfer-Encoding: base64',
+    ];
+    $msg = implode("\r\n", $headers) . "\r\n\r\n" . rtrim(chunk_split(base64_encode($text), 76, "\r\n")) . "\r\n.";
+    if ($e = $cmd($msg, 250)) return "send: $e";
+    $cmd('QUIT', 221);
+    fclose($fp);
+    return null;
 }
 
 $ok ? out(['ok' => true]) : out(['error' => 'send failed'], 502);
