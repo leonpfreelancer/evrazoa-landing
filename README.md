@@ -27,3 +27,15 @@ npm run build && npm start
 - Next.js собирается в статику (`out/`), её отдаёт Worker из `worker/index.js`. Он же обрабатывает `POST /api/booking`.
 - Cloudflare Workers Builds сам собирает и выкладывает сайт при каждом push в `main`. Команда сборки: `npm run build`, команда деплоя: `npx wrangler deploy`.
 - Локальная проверка Worker: `npm run preview`. Секреты для неё кладутся в `.dev.vars`, образец лежит в `.dev.vars.example`.
+
+## Обычный PHP-хостинг (Reg.ru и т.п.)
+
+```bash
+./scripts/pack-hosting.sh   # → evrazoa-hosting.zip
+```
+
+1. Загрузите содержимое архива в корень сайта (обычно `www/<домен>/`), вместе со скрытым файлом `.htaccess`.
+2. Отредактируйте `api/config.php`: почта для заявок и/или Telegram-бот.
+3. Когда SSL-сертификат выпущен, включите перенаправление на HTTPS в `.htaccess`.
+
+Форма отправляет `POST /api/booking`, который `.htaccess` передаёт в `api/booking.php`. Если сервер не смог отправить заявку, у посетителя откроется почта или WhatsApp с готовым текстом.

@@ -63,8 +63,8 @@ export default function BookingForm() {
       if (r.ok) {
         setStatus("ok");
         form.reset();
-      } else if (r.status === 503) {
-        // Бот не настроен — отправляем через WhatsApp
+      } else if (r.status === 503 || r.status === 502) {
+        // Сервер не смог отправить (не настроен или ошибка) — открываем запасной канал
         setStatus("fallback");
         if (site.whatsappNumber) window.open(fallbackLink(data), "_blank");
         else window.location.href = fallbackLink(data);
