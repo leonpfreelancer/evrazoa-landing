@@ -12,3 +12,8 @@ cp -r hosting/. dist-hosting/
 rm -f evrazoa-hosting.zip
 (cd dist-hosting && zip -rq ../evrazoa-hosting.zip .)
 echo "Готово: evrazoa-hosting.zip"
+
+# Архив для обновления уже работающего сайта: без api/config.php (там пароли)
+rm -f evrazoa-update.zip
+(cd dist-hosting && zip -rq ../evrazoa-update.zip . -x 'api/config.php')
+echo "Готово: evrazoa-update.zip (без config.php)"
