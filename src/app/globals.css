@@ -285,3 +285,14 @@ h3 { font-size: clamp(26px, 2.6vw, 34px); }
   .mcd-lg .mcd-mark { width: 30px; height: 30px; }
   .partner-in { padding: 36px 0; }
 }
+
+/* Страницы городов */
+.city-text p { color: var(--muted); font-size: 18px; margin: 0 0 18px; }
+.city-text h3 { margin: 36px 0 18px; font-size: 30px; }
+.routes { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; }
+.routes li { padding: 12px 0 12px 22px; border-bottom: 1px solid var(--line-soft); position: relative; color: var(--cream); }
+.routes li::before { content: ""; position: absolute; left: 0; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; background: var(--gold); }
+.footer-links { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 30px; }
+.footer-links a { color: var(--muted); text-decoration: none; font-size: 15px; }
+.footer-links a:hover { color: var(--cream); }
+@media (max-width: 640px) { .routes { grid-template-columns: 1fr; } }

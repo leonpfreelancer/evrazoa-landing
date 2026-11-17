@@ -3,7 +3,7 @@
 export const site = {
   name: "Евразия Сити Транс",
   slogan: "Два берега. Одна дорога.",
-  url: "https://evrazoa-landing.iskipper123.workers.dev", // TODO: свой домен
+  url: "https://evraziacitytrans.ru",
 
   partner: { name: "MyChauffeurDrive.com", url: "https://mychauffeurdrive.com" }, // url: "" — скрыть
 
