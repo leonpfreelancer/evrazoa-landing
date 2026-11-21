@@ -13,12 +13,12 @@ export const site = {
   phoneRaw: "", // для tel:, например "+905550000000"
 
   messengers: {
-    whatsapp: "", // TODO: "https://wa.me/НОМЕР" — номер без + и пробелов
+    whatsapp: "https://wa.me/37379838218",
     telegram: "https://t.me/+37379838218",
     max: "",
     vk: "",
   },
 
   // Номер для заявки в WhatsApp, если бот Telegram не настроен (без + и пробелов)
-  whatsappNumber: "", // TODO
+  whatsappNumber: "37379838218",
 };
